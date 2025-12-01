@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🍆茄子日历</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- 头部：导航 -->
+    <header class="calendar-header">
+      <button id="prev-month">&lt;</button>
+      <h2 id="month-year">2024年1月</h2>
+      <button id="next-month">&gt;</button>
+      <button id="today-btn">今天</button>
+    </header>
+
+    <!-- 日历网格 -->
+    <div class="calendar-grid" id="calendar-grid">
+      <!-- 星期标题 -->
+      <div class="weekday">日</div>
+      <div class="weekday">一</div>
+      <div class="weekday">二</div>
+      <div class="weekday">三</div>
+      <div class="weekday">四</div>
+      <div class="weekday">五</div>
+      <div class="weekday">六</div>
+      <!-- 日期格子由 JS 填充 -->
+    </div>
+
+    <!-- 右侧面板：日程列表 -->
+    <div class="schedule-sidebar" id="schedule-sidebar">
+      <h3 id="selected-date">2024-01-01 的日程</h3>
+      <div id="schedule-list"></div>
+      <button id="add-schedule-btn">+ 添加日程</button>
+    </div>
+  </div>
+
+  <!-- 添加/编辑日程弹窗 -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 id="modal-title">添加日程</h3>
+      <form id="schedule-form">
+        <input type="hidden" id="schedule-id" />
+        <label>标题<input type="text" id="title" required /></label>
+        <label>日期<input type="date" id="date" required /></label>
+        <label>时间<input type="time" id="time" required /></label>
+        <label>描述<textarea id="description"></textarea></label>
+        <label>
+          提醒
+          <select id="reminder">
+            <option value="0">准时</option>
+            <option value="5">提前5分钟</option>
+            <option value="15" selected>提前15分钟</option>
+            <option value="60">提前1小时</option>
+          </select>
+        </label>
+        <label>
+          颜色
+          <select id="color">
+            <option value="#ff6b6b">红色</option>
+            <option value="#4ecdc4">青色</option>
+            <option value="#ffd166">黄色</option>
+            <option value="#118ab2">蓝色</option>
+            <option value="#06d6a0">绿色</option>
+          </select>
+        </label>
+        <button type="submit">保存</button>
+        <button type="button" id="delete-btn" class="delete hidden">删除</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="scripts/app.js"></script>
+</body>
+</html>
