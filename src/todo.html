@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Todo List</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: rgba(128, 128, 128, 0.4);
+    }
+
+    .top-box {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+    }
+
+    h2 {
+      color: white;
+      margin-top: 0;
+    }
+
+    #guidang {
+      color: rgb(137, 137, 137);
+      margin-top: 0;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    #newTodoInput {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #addBtn {
+      padding: 8px 16px;
+      background: rgba(128, 128, 128, 0.2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #addBtn:hover {
+      background: rgba(128, 128, 128, 0.4);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+      color: white;
+    }
+
+    .todo-checkbox {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .todo-text {
+      flex: 1;
+      font-size: 16px;
+    }
+
+    .completed .todo-text {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .empty {
+      color: #999;
+      font-style: italic;
+      text-align: center;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-box">
+    <h2>todo</h2>
+    <h2 id="guidang">归档</h2>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="newTodoInput" placeholder="输入新任务..." />
+    <button id="addBtn">添加</button>
+  </div>
+
+  <ul id="todoList"></ul>
+
+  <script>
+    const todoList = document.getElementById('todoList');
+    const newTodoInput = document.getElementById('newTodoInput');
+    const addBtn = document.getElementById('addBtn');
+    const guidangBtn = document.getElementById('guidang');
+
+    // 渲染 Todo 列表
+    async function renderTodos() {
+      try {
+        const todos = await window.todoAPI.getTodos();
+        // console.log(todos);
+        let noPassedTodos = todos.filter(t => t.keeped == false);
+        
+        // // 只渲染没有被归档的todo
+        // todos = todos.filter(t => t.keeped == false);
+        console.log(noPassedTodos);
+        
+        if (noPassedTodos.length === 0) {
+          todoList.innerHTML = '<li class="empty">暂无任务</li>';
+          return;
+        }
+        
+        todoList.innerHTML = noPassedTodos.map(todo => `
+          <li class="${todo.completed ? 'completed' : ''}">
+            <input 
+              type="checkbox" 
+              class="todo-checkbox" 
+              data-id="${todo.id}"
+              ${todo.completed ? 'checked' : ''}
+            >
+            <span class="todo-text">${todo.text}</span>
+          </li>
+        `).join('');
+
+        // 绑定 checkbox 事件
+        document.querySelectorAll('.todo-checkbox').forEach(checkbox => {
+          checkbox.addEventListener('change', async (e) => {
+            const id = String(e.target.dataset.id);
+            await window.todoAPI.toggleTodo(id);
+            renderTodos(); // 重新渲染（简单方案）
+          });
+        });
+      } catch (err) {
+        console.error('加载 Todo 失败:', err);
+      }
+    }
+
+    // 添加新 Todo
+    addBtn.addEventListener('click', async () => {
+      const text = newTodoInput.value.trim();
+      if (text) {
+        await window.todoAPI.addTodo(text);
+        newTodoInput.value = '';
+        renderTodos();
+      }
+    });
+
+    // 支持回车添加
+    newTodoInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addBtn.click();
+      }
+    });
+
+    guidangBtn.addEventListener('click', async () => {
+      await window.todoAPI.keepTodo();
+      renderTodos(); // 重新渲染（简单方案）
+    })
+
+    // 初始加载
+    renderTodos();
+  </script>
+</body>
+
+</html>

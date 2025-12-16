@@ -9,10 +9,13 @@ module.exports = {
   },
   rebuildConfig: {},
   makers: [
-    {
-      name: '@electron-forge/maker-squirrel',
-      config: {}
-    },
+    // {
+    //   name: '@electron-forge/maker-squirrel',
+    //   config: {
+    //     name: 'calendar',
+    //     // 明确设置架构为 arm64
+    //   }
+    // },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin', 'win32'],

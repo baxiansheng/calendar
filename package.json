@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "make-win": "electron-forge make --platform win32"
+    "make-win": "electron-forge make --platform win32 --arch x64"
   },
   "keywords": [
     "todo",

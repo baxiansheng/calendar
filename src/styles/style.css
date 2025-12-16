@@ -11,6 +11,10 @@ html body {
   overflow: hidden;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .app-container {
   background-color: rgba(128, 128, 128, 0.4);
   display: grid;
@@ -31,6 +35,41 @@ html body {
   justify-content: center;
   gap: 16px;
   margin-bottom: 12px;
+
+}
+
+.tool-box {
+  position: absolute;
+  /* width: 38px;
+  height: 63px; */
+  padding: 10px;
+  top: 0px;
+  right: 0px;
+  z-index: 111;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column-reverse;
+  -webkit-app-region: drag;
+}
+
+.tool-box button {
+  color: white;
+  border: 1px solid rgba(128, 128, 128, 0);
+  border-radius: 4px;
+  background-color: rgba(128, 128, 128, 0);
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  /* 否则按钮无法点击 */
+}
+
+.tool-box button img{
+  width: 16px;
+  height: 16px;
+}
+
+.btn-selected {
+  background-color: rgba(128, 128, 128, 0.3) !important;
 }
 
 .calendar-header button {
@@ -40,10 +79,17 @@ html body {
   border-radius: 4px;
   background-color: rgba(128, 128, 128, 0);
   cursor: pointer;
+  -webkit-app-region: no-drag;
+  /* 否则按钮无法点击 */
 }
 
 .calendar-header h2 {
+  cursor: pointer;
   font-size: 1.5rem;
+  -webkit-app-region: drag;
+  /* 关键：启用拖拽 */
+  user-select: none;
+  /* 防止文字被选中 */
 }
 
 /* Calendar Grid */
@@ -54,7 +100,7 @@ html body {
   background-color: rgba(128, 128, 128, 0.1);
   padding: 8px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .weekday {
@@ -110,7 +156,7 @@ html body {
   background-color: rgba(128, 128, 128, 0.4);
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   color: white;
 }
@@ -124,7 +170,7 @@ html body {
   padding: 10px;
   margin-bottom: 8px;
   border-left: 4px solid #4ecdc4;
-  background: #f9f9f9;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   cursor: pointer;
   transition: transform 0.1s;
@@ -141,7 +187,7 @@ html body {
 
 .schedule-item .time {
   font-size: 0.85rem;
-  color: #666;
+  color: #a4a4a4;
 }
 
 #add-schedule-btn {
@@ -162,7 +208,7 @@ html body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,26 +238,26 @@ html body {
 
 #schedule-form label {
   display: block;
-  margin: 12px 0 6px;
+  margin: 10px 0 5px;
 }
 
 #schedule-form input,
 #schedule-form textarea,
 #schedule-form select {
   width: 100%;
-  padding: 6px;
+  padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 #schedule-form textarea {
-  height: 60px;
+  height: 50px;
   resize: vertical;
 }
 
 #schedule-form button {
   margin-top: 16px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -235,6 +281,7 @@ html body {
     grid-template-rows: auto 1fr auto;
     padding: 8px;
   }
+
   .schedule-sidebar {
     grid-row: 3;
     max-height: 200px;

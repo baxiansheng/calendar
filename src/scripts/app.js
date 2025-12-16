@@ -6,7 +6,6 @@ import { ReminderService } from './reminder.js';
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
 let selectedDate = new Date().toISOString().split('T')[0];
-console.log(selectedDate);
 
 let scheduleManager = new ScheduleManager();
 let reminderService = null;
@@ -20,6 +19,11 @@ const prevBtn = document.getElementById('prev-month');
 const nextBtn = document.getElementById('next-month');
 const todayBtn = document.getElementById('today-btn');
 const addBtn = document.getElementById('add-schedule-btn');
+const pinBtn = document.getElementById('pinBtn');
+const todoBtn = document.getElementById('todoBtn');
+const shrunkBtn = document.getElementById('shrunkBtn');
+const shrunkOpenBtn = document.getElementById('shrunkOpenBtn');
+shrunkOpenBtn.classList.add('hidden');
 
 // Modal
 const modal = document.getElementById('modal');
@@ -61,19 +65,19 @@ function renderCalendar(year, month) {
       if (cell.isToday) cellEl.classList.add('today');
       if (cell.isWeekend) cellEl.classList.add('weekend');
       cellEl.innerHTML = `<div class="day-number">${cell.date.getDate()}</div>`;
-      
+
       // 添加日程小圆点
       const daySchedules = scheduleManager.getSchedulesByDate(cell.dateString);
-      
+
       if (daySchedules.length > 0) {
-        const dots = daySchedules.slice(0, 3).map(s => 
+        const dots = daySchedules.slice(0, 3).map(s =>
           `<div class="schedule-dot" style="background:${s.color}"></div>`
         ).join('');
         cellEl.innerHTML += `<div class="schedule-dots">${dots}</div>`;
       }
 
       // 直接从DOM元素读取数据
-      cellEl.addEventListener('click', function() {
+      cellEl.addEventListener('click', function () {
         let selectedDate = this.dataset.dateString;  // 从DOM读取
         renderScheduleList(selectedDate);
       });
@@ -204,6 +208,36 @@ function bindEvents() {
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
+  });
+
+  pinBtn.addEventListener('click', async () => {
+    const isPinned = await window.electronAPI.toggleAlwaysOnTop();
+    if (isPinned == true) {
+      pinBtn.classList.add('btn-selected')
+    } else {
+      pinBtn.classList.remove('btn-selected')
+    }
+  });
+
+  todoBtn.addEventListener('click', async () => {
+    let flag = await window.electronAPI.openSecondWindow();
+    if (flag) {
+      todoBtn.classList.add('btn-selected')
+    } else {
+      todoBtn.classList.remove('btn-selected')
+    }
+  });
+
+  shrunkBtn.addEventListener('click', async () => {
+    await window.electronAPI.shrink(38, 83);
+    shrunkBtn.classList.add('hidden');
+    shrunkOpenBtn.classList.remove('hidden');
+  });
+
+  shrunkOpenBtn.addEventListener('click', async () => {
+    await window.electronAPI.restore({});
+    shrunkOpenBtn.classList.add('hidden');
+    shrunkBtn.classList.remove('hidden');
   });
 
   form.addEventListener('submit', (e) => {
